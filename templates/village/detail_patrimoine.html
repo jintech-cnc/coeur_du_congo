@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ patrimoine.titre }} - Cœur du Congo{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<section class="bg-white border-b">
+    <div class="container mx-auto px-4 py-4">
+        <nav class="text-sm text-ardoise/60">
+            <a href="{% url 'village:accueil' %}" class="hover:text-foret">Accueil</a>
+            <span class="mx-2">/</span>
+            <a href="{% url 'village:patrimoines' %}" class="hover:text-foret">Patrimoine</a>
+            <span class="mx-2">/</span>
+            <span class="text-ardoise">{{ patrimoine.titre }}</span>
+        </nav>
+    </div>
+</section>
+
+<!-- Detail Section -->
+<article class="py-12 bg-ivoire">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+            {% if patrimoine.image %}
+            <div class="h-96 overflow-hidden">
+                <img src="{{ patrimoine.image.url }}" alt="{{ patrimoine.titre }}"
+                     class="w-full h-full object-cover">
+            </div>
+            {% else %}
+            <div class="h-96 bg-vert-mousse/20 flex items-center justify-center">
+                <span class="text-9xl">🏛️</span>
+            </div>
+            {% endif %}
+
+            <div class="p-8">
+                <div class="flex flex-wrap items-center gap-2 mb-4">
+                    {% if patrimoine.categorie %}
+                    <a href="{% url 'village:patrimoines_categorie' patrimoine.categorie.slug %}"
+                       class="px-3 py-1 bg-foret/10 text-foret text-sm font-medium rounded-full hover:bg-foret/20 smooth-transition">
+                        {{ patrimoine.categorie.nom }}
+                    </a>
+                    {% endif %}
+                    <span class="text-sm text-ardoise/50">
+                        Ajouté le {{ patrimoine.date_ajout|date:"d M Y" }}
+                    </span>
+                </div>
+
+                <h1 class="font-display text-3xl md:text-4xl font-bold text-ardoise mb-6">
+                    {{ patrimoine.titre }}
+                </h1>
+
+                {% if patrimoine.createur %}
+                <p class="text-ardoise/70 mb-4">
+                    <strong>Créateur / Détenteur :</strong> {{ patrimoine.createur }}
+                </p>
+                {% endif %}
+
+                {% if patrimoine.localisation %}
+                <p class="text-ardoise/70 mb-4 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-foret" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <strong>Localisation :</strong>&nbsp;{{ patrimoine.localisation }}
+                </p>
+                {% endif %}
+
+                <div class="prose max-w-none text-ardoise/80 leading-relaxed mt-6 whitespace-pre-line">
+                    {{ patrimoine.description }}
+                </div>
+
+                {% if patrimoine.video_url %}
+                <div class="mt-8 aspect-video bg-black rounded-xl overflow-hidden">
+                    <iframe src="{{ patrimoine.video_url }}"
+                            class="w-full h-full"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Related items -->
+        <div class="mt-12">
+            <h2 class="font-display text-2xl font-bold text-ardoise mb-6">À découvrir aussi</h2>
+            <a href="{% url 'village:patrimoines' %}" class="inline-flex items-center text-foret font-medium hover:text-foret/80 smooth-transition">
+                <svg class="w-4 h-4 mr-2 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+                Retour au patrimoine
+            </a>
+        </div>
+    </div>
+</article>
+{% endblock %}

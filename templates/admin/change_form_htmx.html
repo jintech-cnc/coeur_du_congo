@@ -1,0 +1,73 @@
+{% extends "admin/change_form.html" %}
+{% load static i18n admin_urls %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+    .gallery-manager {
+        background: white;
+        border: 1px solid var(--border, #E0E0E0);
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 12px;
+    }
+    .gallery-manager h3 {
+        color: #228B22;
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
+    }
+    .gallery-item {
+        position: relative;
+        aspect-ratio: 1;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 2px solid transparent;
+        transition: all 0.2s ease;
+    }
+    .gallery-item:hover {
+        border-color: #228B22;
+    }
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .htmx-loader {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #228B22;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block field_sets %}
+{{ block.super }}
+{% if original %}
+{% if original.pk %}
+<div class="module aligned" id="gallery-section">
+    <h2>Galerie photos</h2>
+    <div class="gallery-manager"
+         hx-get="{% url 'admin:village_galerie_htmx' original.pk %}"
+         hx-trigger="load once"
+         hx-swap="innerHTML">
+        <div style="padding: 20px; text-align: center;">
+            <div class="htmx-loader"></div>
+            <p>Chargement de la galerie...</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Cœur du Congo - Lukafu{% endblock %}</title>
+    <meta name="description" content="{% block description %}Musée virtuel du village de Lukafu, montagnes de Kundelungu, RDC{% endblock %}">
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'terre': '#8B4513',
+                        'foret': '#228B22',
+                        'ciel': '#87CEEB',
+                        'or': '#DAA520',
+                        'ivoire': '#FFFFF0',
+                        'ardoise': '#2C3E50',
+                        'rouille': '#B7410E',
+                        'vert-mousse': '#8A9A5B',
+                        'sable': '#C2B280',
+                        'ocre': '#CC7722',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'display': ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFFFF0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #228B22;
+            border-radius: 4px;
+        }
+        /* Smooth transitions */
+        .smooth-transition {
+            transition: all 0.3s ease;
+        }
+        /* Card hover effect */
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+        /* HTMX loading indicator */
+        .htmx-indicator {
+            opacity: 0;
+            transition: opacity 200ms ease-in;
+        }
+        .htmx-request .htmx-indicator {
+            opacity: 1;
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-ivoire text-ardoise font-sans antialiased">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="{% url 'village:accueil' %}" class="flex items-center space-x-2">
+                    <span class="text-3xl">🌍</span>
+                    <div>
+                        <span class="font-display text-xl font-bold text-foret">Cœur du Congo</span>
+                        <span class="block text-xs text-ardoise/70">Lukafu • Kundelungu</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="{% url 'village:accueil' %}" class="text-ardoise hover:text-foret smooth-transition font-medium">Accueil</a>
+                    <a href="{% url 'village:patrimoines' %}" class="text-ardoise hover:text-foret smooth-transition font-medium">Patrimoine</a>
+                    <a href="{% url 'village:activites' %}" class="text-ardoise hover:text-foret smooth-transition font-medium">Activités</a>
+                    <a href="{% url 'village:informations' %}" class="text-ardoise hover:text-foret smooth-transition font-medium">Le Village</a>
+                    <a href="{% url 'village:contact' %}" class="text-ardoise hover:text-foret smooth-transition font-medium">Contact</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2 rounded-lg hover:bg-gray-100" id="mobile-menu-btn">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div class="md:hidden hidden pb-4" id="mobile-menu">
+                <div class="flex flex-col space-y-2 pt-2 border-t">
+                    <a href="{% url 'village:accueil' %}" class="py-2 px-4 rounded-lg hover:bg-vert-mousse/10 text-ardoise">Accueil</a>
+                    <a href="{% url 'village:patrimoines' %}" class="py-2 px-4 rounded-lg hover:bg-vert-mousse/10 text-ardoise">Patrimoine</a>
+                    <a href="{% url 'village:activites' %}" class="py-2 px-4 rounded-lg hover:bg-vert-mousse/10 text-ardoise">Activités</a>
+                    <a href="{% url 'village:informations' %}" class="py-2 px-4 rounded-lg hover:bg-vert-mousse/10 text-ardoise">Le Village</a>
+                    <a href="{% url 'village:contact' %}" class="py-2 px-4 rounded-lg hover:bg-vert-mousse/10 text-ardoise">Contact</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-ardoise text-white mt-16">
+        <div class="container mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- About -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-2xl">🌍</span>
+                        <span class="font-display text-xl font-bold">Cœur du Congo</span>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        Musée virtuel du village de Lukafu, gardien du patrimoine culturel des montagnes de Kundelungu en RDC.
+                    </p>
+                </div>
+
+                <!-- Links -->
+                <div>
+                    <h4 class="font-semibold mb-4 text-or">Navigation</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="{% url 'village:accueil' %}" class="text-gray-300 hover:text-white smooth-transition">Accueil</a></li>
+                        <li><a href="{% url 'village:patrimoines' %}" class="text-gray-300 hover:text-white smooth-transition">Patrimoine</a></li>
+                        <li><a href="{% url 'village:activites' %}" class="text-gray-300 hover:text-white smooth-transition">Activités</a></li>
+                        <li><a href="{% url 'village:informations' %}" class="text-gray-300 hover:text-white smooth-transition">Le Village</a></li>
+                    </ul>
+                </div>
+
+                <!-- Resources -->
+                <div>
+                    <h4 class="font-semibold mb-4 text-or">Ressources</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-300 hover:text-white smooth-transition">Pour les chercheurs</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white smooth-transition">Pour les touristes</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white smooth-transition">Pour les étudiants</a></li>
+                        <li><a href="{% url 'village:contact' %}" class="text-gray-300 hover:text-white smooth-transition">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="font-semibold mb-4 text-or">Contact</h4>
+                    <div class="space-y-2 text-sm text-gray-300">
+                        <p class="flex items-center space-x-2">
+                            <span>📍</span>
+                            <span>Lukafu, Kundelungu, RDC</span>
+                        </p>
+                        <p class="flex items-center space-x-2">
+                            <span>📧</span>
+                            <span>contact@coeurducongo.cd</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
+                <p>&copy; {% now "Y" %} Cœur du Congo - Lukafu. Tous droits réservés.</p>
+                <p class="mt-2">
+                    <a href="{% url 'admin:index' %}" class="hover:text-white smooth-transition">Administration</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Script -->
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

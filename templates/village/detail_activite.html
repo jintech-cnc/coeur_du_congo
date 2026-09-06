@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ activite.titre }} - Cœur du Congo{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<section class="bg-white border-b">
+    <div class="container mx-auto px-4 py-4">
+        <nav class="text-sm text-ardoise/60">
+            <a href="{% url 'village:accueil' %}" class="hover:text-foret">Accueil</a>
+            <span class="mx-2">/</span>
+            <a href="{% url 'village:activites' %}" class="hover:text-foret">Activités</a>
+            <span class="mx-2">/</span>
+            <span class="text-ardoise">{{ activite.titre }}</span>
+        </nav>
+    </div>
+</section>
+
+<!-- Detail Section -->
+<article class="py-12 bg-ivoire">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+            {% if activite.image_principale %}
+            <div class="h-96 overflow-hidden">
+                <img src="{{ activite.image_principale.url }}" alt="{{ activite.titre }}"
+                     class="w-full h-full object-cover">
+            </div>
+            {% else %}
+            <div class="h-96 bg-or/20 flex items-center justify-center">
+                <span class="text-9xl">📅</span>
+            </div>
+            {% endif %}
+
+            <div class="p-8">
+                <div class="flex flex-wrap items-center gap-2 mb-4">
+                    <span class="px-3 py-1 text-sm font-semibold rounded-full
+                        {% if activite.statut == 'a_venir' %}bg-foret text-white
+                        {% elif activite.statut == 'en_cours' %}bg-rouille text-white
+                        {% else %}bg-ardoise text-white{% endif %}">
+                        {{ activite.get_statut_display }}
+                    </span>
+                </div>
+
+                <h1 class="font-display text-3xl md:text-4xl font-bold text-ardoise mb-6">
+                    {{ activite.titre }}
+                </h1>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 p-4 bg-ivoire rounded-lg">
+                    <div>
+                        <div class="text-sm text-ardoise/60 mb-1">Date</div>
+                        <div class="font-semibold text-ardoise">
+                            {{ activite.date_debut|date:"d M Y" }}
+                            {% if activite.date_fin %}
+                            - {{ activite.date_fin|date:"d M Y" }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-ardoise/60 mb-1">Lieu</div>
+                        <div class="font-semibold text-ardoise">{{ activite.lieu }}</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-ardoise/60 mb-1">Organisateur</div>
+                        <div class="font-semibold text-ardoise">{{ activite.organisateur|default:"-" }}</div>
+                    </div>
+                </div>
+
+                <div class="prose max-w-none text-ardoise/80 leading-relaxed whitespace-pre-line">
+                    {{ activite.description }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Photo Gallery with HTMX -->
+        {% if activite.images.all %}
+        <div class="mt-12">
+            <h2 class="font-display text-2xl font-bold text-ardoise mb-6">Galerie photos</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {% for img in activite.images.all %}
+                <div class="aspect-square overflow-hidden rounded-lg cursor-pointer group"
+                     onclick="openImageModal('{{ img.image.url }}', '{{ img.legende|escapejs }}')">
+                    <img src="{{ img.image.url }}" alt="{{ img.legende|default:activite.titre }}"
+                         class="w-full h-full object-cover group-hover:scale-110 smooth-transition">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</article>
+
+<!-- Image Modal -->
+<div id="imageModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50 p-4" onclick="closeImageModal()">
+    <div class="max-w-5xl max-h-full">
+        <img id="modalImage" src="" alt="" class="max-w-full max-h-[80vh] object-contain">
+        <p id="modalCaption" class="text-white text-center mt-4 text-lg"></p>
+    </div>
+    <button onclick="closeImageModal()" class="absolute top-4 right-4 text-white text-4xl">&times;</button>
+</div>
+
+<script>
+function openImageModal(url, caption) {
+    document.getElementById('modalImage').src = url;
+    document.getElementById('modalCaption').textContent = caption;
+    document.getElementById('imageModal').classList.remove('hidden');
+    document.getElementById('imageModal').classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+function closeImageModal() {
+    document.getElementById('imageModal').classList.add('hidden');
+    document.getElementById('imageModal').classList.remove('flex');
+    document.body.style.overflow = '';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Message envoyé - Cœur du Congo{% endblock %}
+
+{% block content %}
+<section class="py-24 bg-ivoire">
+    <div class="container mx-auto px-4 max-w-2xl text-center">
+        <div class="bg-white rounded-2xl shadow-md p-12">
+            <div class="text-7xl mb-6">✅</div>
+            <h1 class="font-display text-3xl font-bold text-ardoise mb-4">Message envoyé avec succès !</h1>
+            <p class="text-ardoise/70 mb-8">
+                Merci pour votre message. Nous vous répondrons dans les meilleurs délais.
+            </p>
+            <a href="{% url 'village:accueil' %}" class="inline-flex items-center px-6 py-3 bg-foret text-white font-semibold rounded-lg hover:bg-foret/90 smooth-transition">
+                Retour à l'accueil
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

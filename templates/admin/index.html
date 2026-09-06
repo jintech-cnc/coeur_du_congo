@@ -1,0 +1,300 @@
+{% extends "admin/index.html" %}
+{% load static %}
+
+{% block title %}Tableau de bord - Cœur du Congo Admin{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <span class="site-icon">🌍</span>
+        <span class="site-title">Cœur du Congo</span>
+    </a>
+</h1>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .dashboard-header {
+        background: #228B22;
+        color: white;
+        padding: 24px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .dashboard-header h1 {
+        color: white !important;
+        font-size: 1.75rem;
+        margin: 0;
+    }
+    .dashboard-header p {
+        color: rgba(255,255,255,0.8);
+        margin: 8px 0 0;
+    }
+    .quick-actions {
+        display: flex;
+        gap: 12px;
+    }
+    .quick-action-btn {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+    .quick-action-btn:hover {
+        background: rgba(255,255,255,0.3);
+        transform: translateY(-2px);
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border-left: 4px solid #228B22;
+        transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .stat-card.messages {
+        border-left-color: #DAA520;
+    }
+    .stat-card.activities {
+        border-left-color: #B7410E;
+    }
+    .stat-card.pages {
+        border-left-color: #2C3E50;
+    }
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2C3E50;
+    }
+    .stat-label {
+        color: #6C757D;
+        font-size: 0.875rem;
+        margin-top: 4px;
+    }
+    .stat-icon {
+        float: right;
+        font-size: 2rem;
+        opacity: 0.5;
+    }
+    .app-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+    .app-header {
+        background: #228B22;
+        color: white;
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .app-header h3 {
+        color: white !important;
+        margin: 0;
+        font-weight: 600;
+    }
+    .app-header a {
+        color: rgba(255,255,255,0.8);
+        font-size: 0.875rem;
+    }
+    .app-header a:hover {
+        color: white;
+    }
+    .app-content {
+        padding: 0;
+    }
+    .model-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        border-bottom: 1px solid #E8E8E8;
+        transition: background 0.2s ease;
+    }
+    .model-row:last-child {
+        border-bottom: none;
+    }
+    .model-row:hover {
+        background: #F8F9FA;
+    }
+    .model-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .model-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+    .model-icon.heritage { background: rgba(34,139,34,0.1); }
+    .model-icon.activity { background: rgba(218,165,32,0.1); }
+    .model-icon.info { background: rgba(44,62,80,0.1); }
+    .model-icon.contact { background: rgba(183,65,14,0.1); }
+    .model-name {
+        font-weight: 500;
+        color: #2C3E50;
+    }
+    .model-count {
+        font-size: 0.875rem;
+        color: #6C757D;
+    }
+    .model-actions {
+        display: flex;
+        gap: 8px;
+    }
+    .model-btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+    .model-btn.add {
+        background: #228B22;
+        color: white;
+    }
+    .model-btn.add:hover {
+        background: #1B6B1B;
+    }
+    .model-btn.change {
+        background: #F8F9FA;
+        color: #2C3E50;
+        border: 1px solid #E0E0E0;
+    }
+    .model-btn.change:hover {
+        background: #E8E8E8;
+    }
+    .help-section {
+        background: #FFFFF0;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 24px;
+        border: 1px solid #E8D8B8;
+    }
+    .help-section h3 {
+        color: #8B4513;
+        margin-top: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .help-section ul {
+        margin: 0;
+        padding-left: 20px;
+        color: #6C757D;
+    }
+    .help-section li {
+        margin-bottom: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block welcome_message %}
+<div class="dashboard-header">
+    <div>
+        <h1>Bienvenue sur votre tableau de bord</h1>
+        <p>Gérez le contenu du musée virtuel de Lukafu</p>
+    </div>
+    <div class="quick-actions">
+        <a href="{% url 'admin:village_patrimoine_add' %}" class="quick-action-btn">
+            ➕ Nouveau patrimoine
+        </a>
+        <a href="{% url 'admin:village_activite_add' %}" class="quick-action-btn">
+            📅 Nouvelle activité
+        </a>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-icon">🏛️</span>
+        <div class="stat-value">{{ stats.patrimoine|default:"0" }}</div>
+        <div class="stat-label">Patrimoines</div>
+    </div>
+    <div class="stat-card activities">
+        <span class="stat-icon">📅</span>
+        <div class="stat-value">{{ stats.activite|default:"0" }}</div>
+        <div class="stat-label">Activités</div>
+    </div>
+    <div class="stat-card messages">
+        <span class="stat-icon">✉️</span>
+        <div class="stat-value">{{ stats.message|default:"0" }}</div>
+        <div class="stat-label">Messages non lus</div>
+    </div>
+    <div class="stat-card pages">
+        <span class="stat-icon">📖</span>
+        <div class="stat-value">{{ stats.page|default:"0" }}</div>
+        <div class="stat-label">Pages</div>
+    </div>
+</div>
+
+<!-- Visit Counter Stats -->
+{% if stats.visites_totales > 0 %}
+<div class="stats-grid">
+    <div class="stat-card visits">
+        <span class="stat-icon">👁️</span>
+        <div class="stat-value">{{ stats.visites_totales|default:"0" }}</div>
+        <div class="stat-label">Visites totales</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">📊</span>
+        <div class="stat-value">{{ stats.visites_aujourd_hui|default:"0" }}</div>
+        <div class="stat-label">Visites aujourd'hui</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">📄</span>
+        <div class="stat-value">{{ stats.pages_uniques|default:"0" }}</div>
+        <div class="stat-label">Pages uniques</div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+{% endblock %}
+
+{% block sidebar %}
+<div id="content-related">
+    <div class="help-section">
+        <h3>💡 Astuces rapides</h3>
+        <ul>
+            <li><strong>Patrimoine :</strong> Ajoutez les éléments culturels avec photos et vidéos</li>
+            <li><strong>Activités :</strong> Créez des événements avec galerie photos</li>
+            <li><strong>Messages :</strong> Consultez les messages des visiteurs</li>
+            <li><strong>Pages :</strong> Rédigez l'histoire du village</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

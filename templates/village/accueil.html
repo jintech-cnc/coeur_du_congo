@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+
+{% block title %}Accueil - Cœur du Congo{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative bg-foret text-white overflow-hidden">
+    <div class="absolute inset-0 bg-ardoise/30"></div>
+    <div class="container mx-auto px-4 py-24 relative z-10">
+        <div class="max-w-3xl">
+            <h1 class="font-display text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                Bienvenue à Lukafu
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-white/90 leading-relaxed">
+                Au cœur des montagnes sacrées de Kundelungu, découvrez un village gardien d'un patrimoine culturel millénaire.
+            </p>
+            <div class="flex flex-wrap gap-4">
+                <a href="{% url 'village:patrimoines' %}" class="inline-flex items-center px-6 py-3 bg-or text-ardoise font-semibold rounded-lg hover:bg-or/90 smooth-transition">
+                    Découvrir le patrimoine
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+                <a href="{% url 'village:informations' %}" class="inline-flex items-center px-6 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-foret smooth-transition">
+                    Le village
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Decorative pattern -->
+    <div class="absolute right-0 bottom-0 opacity-10">
+        <svg width="400" height="400" viewBox="0 0 400 400" fill="currentColor">
+            <circle cx="200" cy="200" r="150"/>
+        </svg>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-12 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+                <div class="text-4xl font-bold text-foret mb-2">∞</div>
+                <div class="text-ardoise/70">Années d'histoire</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-or mb-2">{{ categories_patrimoine.count|default:"6" }}</div>
+                <div class="text-ardoise/70">Traditions vivantes</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-rouille mb-2">1</div>
+                <div class="text-ardoise/70">Village unique</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-vert-mousse mb-2">∞</div>
+                <div class="text-ardoise/70">Ressources en ligne</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Heritage Categories Section -->
+<section class="py-16 bg-ivoire">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="font-display text-3xl md:text-4xl font-bold text-ardoise mb-4">
+                Notre Patrimoine
+            </h2>
+            <p class="text-ardoise/70 max-w-2xl mx-auto">
+                Explorez les différentes facettes du patrimoine culturel de Lukafu, transmis de génération en génération.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for categorie in categories_patrimoine %}
+            <a href="{% url 'village:patrimoines_categorie' categorie.slug %}" class="group">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover smooth-transition h-full">
+                    {% if categorie.patrimoines.first.image %}
+                    <div class="h-48 overflow-hidden">
+                        <img src="{{ categorie.patrimoines.first.image.url }}" alt="{{ categorie.nom }}"
+                             class="w-full h-full object-cover group-hover:scale-105 smooth-transition">
+                    </div>
+                    {% else %}
+                    <div class="h-48 bg-vert-mousse/20 flex items-center justify-center">
+                        <span class="text-6xl">🎭</span>
+                    </div>
+                    {% endif %}
+                    <div class="p-6">
+                        <h3 class="font-display text-xl font-semibold text-ardoise mb-2 group-hover:text-foret smooth-transition">
+                            {{ categorie.nom }}
+                        </h3>
+                        <p class="text-ardoise/60 text-sm line-clamp-2">
+                            {{ categorie.description|default:"Découvrez les trésors culturels de cette catégorie." }}
+                        </p>
+                        <div class="mt-4 flex items-center text-foret font-medium text-sm">
+                            <span>Explorer</span>
+                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 smooth-transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <div class="text-6xl mb-4">🌍</div>
+                <p class="text-ardoise/60">Le patrimoine est en cours de constitution. Revenez bientôt !</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-10">
+            <a href="{% url 'village:patrimoines' %}" class="inline-flex items-center px-6 py-3 bg-foret text-white font-semibold rounded-lg hover:bg-foret/90 smooth-transition">
+                Voir tout le patrimoine
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Upcoming Activities Section -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between mb-12">
+            <div>
+                <h2 class="font-display text-3xl md:text-4xl font-bold text-ardoise mb-2">
+                    Activités à venir
+                </h2>
+                <p class="text-ardoise/70">Ne manquez pas les événements culturels de Lukafu</p>
+            </div>
+            <a href="{% url 'village:activites_statut' 'a_venir' %}" class="hidden md:inline-flex items-center text-foret font-medium hover:text-foret/80 smooth-transition">
+                Voir tout
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for activite in prochaines_activites %}
+            <a href="{% url 'village:detail_activite' activite.pk %}" class="group">
+                <div class="bg-ivoire rounded-xl overflow-hidden card-hover smooth-transition h-full">
+                    {% if activite.image_principale %}
+                    <div class="h-40 overflow-hidden">
+                        <img src="{{ activite.image_principale.url }}" alt="{{ activite.titre }}"
+                             class="w-full h-full object-cover group-hover:scale-105 smooth-transition">
+                    </div>
+                    {% else %}
+                    <div class="h-40 bg-or/20 flex items-center justify-center">
+                        <span class="text-5xl">📅</span>
+                    </div>
+                    {% endif %}
+                    <div class="p-6">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="px-2 py-1 bg-foret/10 text-foret text-xs font-medium rounded">
+                                {{ activite.get_statut_display }}
+                            </span>
+                            <span class="text-ardoise/50 text-sm">{{ activite.date_debut|date:"d M Y" }}</span>
+                        </div>
+                        <h3 class="font-semibold text-lg text-ardoise mb-2 group-hover:text-foret smooth-transition">
+                            {{ activite.titre }}
+                        </h3>
+                        <p class="text-ardoise/60 text-sm line-clamp-2">{{ activite.description }}</p>
+                        <p class="mt-3 text-sm text-ardoise/50 flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            {{ activite.lieu }}
+                        </p>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <div class="text-6xl mb-4">📅</div>
+                <p class="text-ardoise/60">Aucune activité à venir pour le moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Past Activities Section -->
+<section class="py-16 bg-ardoise text-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">
+                Archives des événements
+            </h2>
+            <p class="text-white/70">Revivez les moments forts passés à Lukafu</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for activite in activites_passees %}
+            <a href="{% url 'village:detail_activite' activite.pk %}" class="group">
+                <div class="bg-white/5 rounded-xl overflow-hidden border border-white/10 hover:bg-white/10 smooth-transition h-full">
+                    {% if activite.image_principale %}
+                    <div class="h-40 overflow-hidden">
+                        <img src="{{ activite.image_principale.url }}" alt="{{ activite.titre }}"
+                             class="w-full h-full object-cover opacity-80 group-hover:opacity-100 smooth-transition">
+                    </div>
+                    {% else %}
+                    <div class="h-40 bg-white/5 flex items-center justify-center">
+                        <span class="text-5xl opacity-50">📷</span>
+                    </div>
+                    {% endif %}
+                    <div class="p-6">
+                        <span class="text-or text-sm">{{ activite.date_debut|date:"d M Y" }}</span>
+                        <h3 class="font-semibold text-lg mt-2 mb-2">{{ activite.titre }}</h3>
+                        <p class="text-white/60 text-sm line-clamp-2">{{ activite.description }}</p>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <div class="text-6xl mb-4 opacity-50">📷</div>
+                <p class="text-white/60">Aucune archive disponible pour le moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-10">
+            <a href="{% url 'village:activites_statut' 'passe' %}" class="inline-flex items-center px-6 py-3 border-2 border-or text-or font-semibold rounded-lg hover:bg-or hover:text-ardoise smooth-transition">
+                Voir toutes les archives
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Info Section -->
+<section class="py-16 bg-ivoire">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="font-display text-3xl md:text-4xl font-bold text-ardoise mb-6">
+                Un trésor caché des montagnes de Kundelungu
+            </h2>
+            <p class="text-ardoise/70 text-lg leading-relaxed mb-8">
+                Lukafu est bien plus qu'un simple village. C'est un conservatoire vivant des traditions ancestrales,
+                où chaque rituel, chaque danse, chaque chanson raconte l'histoire d'un peuple fier de son identité.
+                À travers ce musée virtuel, nous ouvrons les portes de ce patrimoine aux étudiants, chercheurs et curieux du monde entier.
+            </p>
+            <a href="{% url 'village:informations' %}" class="inline-flex items-center px-6 py-3 bg-foret text-white font-semibold rounded-lg hover:bg-foret/90 smooth-transition">
+                Découvrir le village
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-16 bg-vert-mousse text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">
+            Vous avez des questions ?
+        </h2>
+        <p class="text-white/80 mb-8 max-w-2xl mx-auto">
+            Que vous soyez chercheur, étudiant ou touriste, contactez-nous pour en savoir plus sur Lukafu et son patrimoine.
+        </p>
+        <a href="{% url 'village:contact' %}" class="inline-flex items-center px-8 py-4 bg-white text-vert-mousse font-bold rounded-lg hover:bg-white/90 smooth-transition">
+            Nous contacter
+        </a>
+    </div>
+</section>
+{% endblock %}

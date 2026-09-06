@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Activités - Cœur du Congo{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-or text-ardoise py-16">
+    <div class="container mx-auto px-4">
+        <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">Activités & Événements</h1>
+        <p class="text-xl text-ardoise/80 max-w-2xl">
+            Découvrez les événements culturels passés et à venir au village de Lukafu.
+        </p>
+    </div>
+</section>
+
+<!-- Status Tabs -->
+<section class="bg-white border-b sticky top-16 z-30">
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center space-x-2 overflow-x-auto pb-2" id="filter-statuts">
+            <a href="{% url 'village:activites_statut' 'a_venir' %}"
+               class="px-4 py-2 rounded-lg whitespace-nowrap smooth-transition {% if request.resolver_match.kwargs.statut == 'a_venir' or not request.resolver_match.kwargs.statut %}bg-foret text-white{% else %}bg-gray-100 text-ardoise hover:bg-gray-200{% endif %}">
+                À venir
+            </a>
+            <a href="{% url 'village:activites_statut' 'en_cours' %}"
+               class="px-4 py-2 rounded-lg whitespace-nowrap smooth-transition {% if request.resolver_match.kwargs.statut == 'en_cours' %}bg-rouille text-white{% else %}bg-gray-100 text-ardoise hover:bg-gray-200{% endif %}">
+                En cours
+            </a>
+            <a href="{% url 'village:activites_statut' 'passe' %}"
+               class="px-4 py-2 rounded-lg whitespace-nowrap smooth-transition {% if request.resolver_match.kwargs.statut == 'passe' %}bg-ardoise text-white{% else %}bg-gray-100 text-ardoise hover:bg-gray-200{% endif %}">
+                Archives
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Activities Grid -->
+<section class="py-12 bg-ivoire">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for activite in activites %}
+            <a href="{% url 'village:detail_activite' activite.pk %}" class="group">
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden card-hover smooth-transition h-full">
+                    {% if activite.image_principale %}
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="{{ activite.image_principale.url }}" alt="{{ activite.titre }}"
+                             class="w-full h-full object-cover group-hover:scale-105 smooth-transition">
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full
+                                {% if activite.statut == 'a_venir' %}bg-foret text-white
+                                {% elif activite.statut == 'en_cours' %}bg-rouille text-white
+                                {% else %}bg-ardoise text-white{% endif %}">
+                                {{ activite.get_statut_display }}
+                            </span>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="h-48 bg-or/20 flex items-center justify-center relative">
+                        <span class="text-6xl">📅</span>
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full
+                                {% if activite.statut == 'a_venir' %}bg-foret text-white
+                                {% elif activite.statut == 'en_cours' %}bg-rouille text-white
+                                {% else %}bg-ardoise text-white{% endif %}">
+                                {{ activite.get_statut_display }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="p-6">
+                        <div class="text-sm text-foret mb-2 font-medium">
+                            <span class="inline-flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                {{ activite.date_debut|date:"d M Y" }}
+                            </span>
+                            {% if activite.date_fin %}
+                            <span class="ml-2">→ {{ activite.date_fin|date:"d M Y" }}</span>
+                            {% endif %}
+                        </div>
+                        <h3 class="font-semibold text-lg text-ardoise mb-2 group-hover:text-foret smooth-transition">
+                            {{ activite.titre }}
+                        </h3>
+                        <p class="text-ardoise/60 text-sm line-clamp-2">{{ activite.description }}</p>
+                        <div class="mt-4 flex items-center justify-between text-sm">
+                            <span class="text-ardoise/50 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                </svg>
+                                {{ activite.lieu }}
+                            </span>
+                            {% if activite.images.all %}
+                            <span class="text-ardoise/50 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                {{ activite.images.count }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="col-span-full text-center py-16">
+                <div class="text-7xl mb-4 opacity-50">📅</div>
+                <h3 class="font-display text-2xl text-ardoise mb-2">Aucune activité</h3>
+                <p class="text-ardoise/60">Aucun événement à afficher pour ce statut.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

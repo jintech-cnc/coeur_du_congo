@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page.titre }} - Cœur du Congo{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<section class="bg-white border-b">
+    <div class="container mx-auto px-4 py-4">
+        <nav class="text-sm text-ardoise/60">
+            <a href="{% url 'village:accueil' %}" class="hover:text-foret">Accueil</a>
+            <span class="mx-2">/</span>
+            <a href="{% url 'village:informations' %}" class="hover:text-foret">Le Village</a>
+            <span class="mx-2">/</span>
+            <span class="text-ardoise">{{ page.titre }}</span>
+        </nav>
+    </div>
+</section>
+
+<!-- Page Header -->
+{% if page.image_tete %}
+<section class="h-64 overflow-hidden">
+    <img src="{{ page.image_tete.url }}" alt="{{ page.titre }}" class="w-full h-full object-cover">
+</section>
+{% endif %}
+
+<!-- Page Content -->
+<article class="py-12 bg-ivoire">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <div class="bg-white rounded-2xl shadow-md p-8 md:p-12">
+            <h1 class="font-display text-3xl md:text-4xl font-bold text-ardoise mb-8">
+                {{ page.titre }}
+            </h1>
+            <div class="prose max-w-none text-ardoise/80 leading-relaxed whitespace-pre-line">
+                {{ page.contenu }}
+            </div>
+            <div class="mt-8 pt-8 border-t border-ardoise/10 text-sm text-ardoise/60">
+                Dernière mise à jour : {{ page.date_modification|date:"d M Y" }}
+            </div>
+        </div>
+    </div>
+</article>
+{% endblock %}

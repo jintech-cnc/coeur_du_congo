@@ -1,0 +1,14 @@
+{
+  "plugin": "org.smartide.plugin.django",
+  "run": "python manage.py runserver localhost:8000",
+  "intelligence": {
+    ".json": {
+      "enabled": true,
+      "run": "vscode-json-language-server --stdio"
+    },
+    ".py": {
+      "enabled": false,
+      "run": "pylsp"
+    }
+  }
+}

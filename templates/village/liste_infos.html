@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Le Village - Cœur du Congo{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-vert-mousse text-white py-16">
+    <div class="container mx-auto px-4">
+        <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">Le Village de Lukafu</h1>
+        <p class="text-xl text-white/90 max-w-2xl">
+            Découvrez l'histoire, la géographie et la culture du village de Lukafu dans les montagnes de Kundelungu.
+        </p>
+    </div>
+</section>
+
+<!-- Pages Grid -->
+<section class="py-12 bg-ivoire">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for page in pages %}
+            <a href="{% url 'village:detail_page' page.slug %}" class="group">
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden card-hover smooth-transition h-full">
+                    {% if page.image_tete %}
+                    <div class="h-40 overflow-hidden">
+                        <img src="{{ page.image_tete.url }}" alt="{{ page.titre }}"
+                             class="w-full h-full object-cover group-hover:scale-105 smooth-transition">
+                    </div>
+                    {% else %}
+                    <div class="h-40 bg-sable/30 flex items-center justify-center">
+                        <span class="text-5xl">📖</span>
+                    </div>
+                    {% endif %}
+                    <div class="p-6">
+                        <h3 class="font-semibold text-lg text-ardoise mb-2 group-hover:text-foret smooth-transition">
+                            {{ page.titre }}
+                        </h3>
+                        <p class="text-ardoise/60 text-sm line-clamp-3">
+                            {{ page.contenu|truncatewords:30 }}
+                        </p>
+                        <span class="mt-4 inline-flex items-center text-foret font-medium text-sm">
+                            Lire la suite
+                            <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 smooth-transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="col-span-full text-center py-16">
+                <div class="text-7xl mb-4 opacity-50">📖</div>
+                <h3 class="font-display text-2xl text-ardoise mb-2">Aucune page disponible</h3>
+                <p class="text-ardoise/60">Le contenu est en cours de préparation. Revenez bientôt !</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
