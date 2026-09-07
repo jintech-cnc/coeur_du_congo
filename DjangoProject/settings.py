@@ -3,11 +3,7 @@ Django settings for Cœur du Congo - Musée Virtuel de Lukafu
 """
 
 from pathlib import Path
-from dotenv import load_dotenv
 import os
-
-# Load environment variables from .env (optionnel)
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -101,7 +97,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Rate limiting for admin login
 AUTHENTICATION_BACKENDS = [
     'village.auth_backend.RateLimitedAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
@@ -139,7 +134,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # ============================================================================
-# CLOUDINARY - Stockage d'images (gratuit 25Go)
+# CLOUDINARY
 # ============================================================================
 
 CLOUDINARY_STORAGE = {
